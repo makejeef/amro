@@ -15,7 +15,7 @@ def get_cookies(url):
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
     # url='https://me.sichuanair.com/login.shtml'
-    driver.get(url['airnavx'])
+    driver.get(url)
 
 
     "输入账号密码进入airnav，获取cookies"
@@ -36,7 +36,7 @@ def get_fl(fl_type,cookies):
 
     "需要看清楚是get还是post方法"
     # l=session.post(url['330'],data=post_data['330'],headers=headers,cookies=air_cookies)
-    l=requests.get(url['330'],data=post_data['330'],headers=headers,cookies=air_cookies)
+    l=requests.get(url[fl_type],data=post_data[fl_type],headers=headers,cookies=air_cookies)
     if l.status_code==200:
         json_data=l.content.decode('utf-8')
         data_str=json.loads(json_data)
@@ -54,12 +54,18 @@ def get_fl(fl_type,cookies):
 if __name__=='__main__':
     "url列表"
     url={'airnavx':'http://tp3.sichuanair.com:8000/airnavx/search/text',
+             '320':'http://tp3.sichuanair.com:8000/airnavx/api/filter/getFilter?filterType=tailNumber&maxResults=300&msnBinding=%7B%22actype%22:%5B%22A318%22,%22A319%22,%22A320%22,%22A321%22%5D,%22customization%22:%5B%22CSC%22%5D%7D&revId=661498_SGML_C&searchFilter=&searchMode=document.toc',
              '330':'http://tp3.sichuanair.com:8000/airnavx/api/filter/getFilter?filterType=tailNumber&maxResults=21&msnBinding=%7B%22actype%22:%5B%22A330%22%5D,%22customization%22:%5B%22CSC%22%5D%7D&revId=654749_SGML_C&searchFilter=&searchMode=document.toc',
-             '350':'http://tp3.sichuanair.com:8000/airnavx/api/filter/getFilter?filterType=tailNumber&maxResults=21&msnBinding=%7B%22actype%22:%5B%22A350%22%5D,%22customization%22:%5B%22CSC%22%5D%7D&revId=655658_S1KD_C&searchFilter=&searchMode=document.toc'
+             '350':'http://tp3.sichuanair.com:8000/airnavx/api/filter/getFilter?filterType=tailNumber&maxResults=21&msnBinding=%7B%22actype%22:%5B%22A350%22%5D,%22customization%22:%5B%22CSC%22%5D%7D&revId=661146_S1KD_C&searchFilter=&searchMode=document.toc'
              }
     "post_data列表"
     "同一型号的飞机号列表"
-    post_data={'330':{'filterType': 'tailNumber',
+    post_data={'320':{'filterType': 'tailNumber',
+                      'maxResults': '300',
+                      'msnBinding': {"actype":["A318","A319","A320","A321"],"customization":["CSC"]},
+                      'revId': '661498_SGML_C',
+                      'searchMode': 'document.toc'},
+               '330':{'filterType': 'tailNumber',
                       'maxResults': '21',
                       'msnBinding': {"actype":["A330"],"customization":["CSC"]},
                       'revId': '654749_SGML_C',
@@ -67,9 +73,15 @@ if __name__=='__main__':
                '350':{'filterType': 'tailNumber',
                       'maxResults': '21',
                       'msnBinding': {"actype":["A350"],"customization":["CSC"]},
-                      'revId': '655658_S1KD_C',
+                      'revId': '661146_S1KD_C',
                       'searchMode':'document.toc'}}
     
+    fl_type=input("飞机型号：")
+    
+    fl_cookies=get_cookies(url['airnavx'])
+
+    fl_list=get_fl(fl_type,fl_cookies)
+    print(fl_list,len(fl_list))
     
     
     
