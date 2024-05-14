@@ -76,7 +76,8 @@ if __name__=='__main__':
                       'revId': '661146_S1KD_C',
                       'searchMode':'document.toc'}}
     
-    fl_type=input("飞机型号：")
+    # fl_tn=input("飞机型号：")
+    fl_type=input("机号：")
     
     fl_cookies=get_cookies(url['airnavx'])
 

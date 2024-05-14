@@ -99,6 +99,8 @@ def get_fl(cookies,fln,start_date,end_date):
     else:
         print('no fl data')
 
+    
+
 if __name__ == '__main__':
     fln_l=[]
     value_fln=input('请输入飞机号：')
