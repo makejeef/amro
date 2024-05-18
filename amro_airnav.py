@@ -35,19 +35,19 @@ post_data={'320':{'filterType': 'tailNumber',
                   'msnBinding': {"actype":["A350"],"customization":["CSC"]},
                   'revId': '661146_S1KD_C',
                   'searchMode':'document.toc'},
-           'fl':{"flightDate":"{}".format(start_date),
-                       "flightDate1":"{}".format(end_date),
-                       "actype1":"()",
-                       "acno":"{}".format(fln),
-                       "page":"1",
-                       "rows":"999"}}
+           # 'fl':{"flightDate":"{}".format(start_date),
+           #             "flightDate1":"{}".format(end_date),
+           #             "actype1":"()",
+           #             "acno":"{}".format(fln),
+           #             "page":"1",
+           #             "rows":"999"}
+           }
 
 "获取所有飞机号"
 def get_flight():
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
-    # url='https://me.sichuanair.com/login.shtml'
-    driver.get(url['airnavx'])
+    driver.get(url)
 
 
     "输入账号密码进入airnav，获取cookies"
@@ -58,32 +58,33 @@ def get_flight():
 
     time.sleep(5)
     cookies = driver.get_cookies()
-    # return cookies
-    driver.close() 
+    return cookies
+    driver.close()
     
-# def get_fl(fl_type,cookies):
-    session=requests.Session()
     air_cookies={cookie['name']: cookie['value'] for cookie in cookies}
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
 
     "需要看清楚是get还是post方法"
     f=[]
     f_type=['320','330','350']
-    # l=session.post(url['330'],data=post_data['330'],headers=headers,cookies=air_cookies)
     for t in f_type:
+        # l=session.post(url['330'],data=post_data['330'],headers=headers,cookies=air_cookies)
         l=requests.get(url[t],data=post_data[t],headers=headers,cookies=air_cookies)
         if l.status_code==200:
             json_data=l.content.decode('utf-8')
             data_str=json.loads(json_data)
             fln_list=data_str['results']
+            # print(fln_list)
             fl=[i['aircraftDetail'][0][0:6] for i in fln_list]
             f.append(fl)
-            #return fl
+            # return fl
+        
         else:
             print('no data')
-    return 
+    return f
+
 "每一架飞机轮子的频率"
-def get_wo(tn):
+def get_wo(tn,start,end):
     "模拟登录得到amro的cookies"
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
@@ -117,13 +118,12 @@ def get_wo(tn):
     
     
     "使用cookies 获取工作包内容"
-    postdata_wo={"planstd":"2023-01-04 08:00:00",
-                "planend":" 2024-04-05 08:00:00",
-                "ifClose":"",
-                "order":"asc",
+    postdata_wo={"planstd":"{} 08:00:00".foramt(start),
+                "planend":" {} 08:00:00".foramt(end),
                 "keyWord":"主轮",
                 "keyWordStr":"主轮",
-                "acno":"{}".format(tn),
+                "actypeStr": "({})".format(tn),
+                "actype": "{}".format(tn),
                 "page":"1",
                 "rows":"999"}
     session=requests.Session()
@@ -164,7 +164,19 @@ def get_wo(tn):
         print('no fl data')
 
 if __name__=='__main__':
-    f=get_flight()
-    d={'320':f[0],'330':f[1],'350':f[2]}
-    dataframe=pd.DataFrame.from_dict(d,orient='index')
-    dataframe.to_csv('fl.csv',index=False,sep=',')
+    "得到所有飞机的字典列表"
+    fl=get_flight()
+    d={'320':fl[0],'330':fl[1],'350':fl[2]}
+    # dataframe=pd.DataFrame.from_dict(d,orient='index')
+    # dataframe.to_csv('fl.csv',index=False,sep=',')
+    
+    "根据飞机类型得到所有的飞机的更换轮子的工作包"
+    start='2023-01-01'
+    end='2023-01-01'
+    wo=[]
+    for i in d:
+        wo.append(get_wo(d, start, end))
+    
+        
+    
+    
