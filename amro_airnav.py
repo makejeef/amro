@@ -84,7 +84,7 @@ def get_flight():
     return f
 
 "每一架飞机轮子的频率"
-def get_wo(tn,start,end):
+def get_wocookies():
     "模拟登录得到amro的cookies"
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
@@ -113,10 +113,12 @@ def get_wo(tn,start,end):
     elements_but=driver.find_element(By.ID,'btnSubmit').click()
 
     time.sleep(5)
-    cookies = driver.get_cookies()   
+    cookies = driver.get_cookies()
+    return cookies
     driver.close()
     
-    
+def get_wo(tn,start,end):
+    cookies=get_wocookies()
     "使用cookies 获取工作包内容"
     postdata_wo={"planstd":"{} 08:00:00".foramt(start),
                 "planend":" {} 08:00:00".foramt(end),
@@ -172,10 +174,10 @@ if __name__=='__main__':
     
     "根据飞机类型得到所有的飞机的更换轮子的工作包"
     start='2023-01-01'
-    end='2023-01-01'
+    end='2024-01-01'
     wo=[]
     for i in d:
-        wo.append(get_wo(d, start, end))
+        wo.append(get_wo(i, start, end))
     
         
     

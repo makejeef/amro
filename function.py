@@ -14,14 +14,10 @@ from selenium.webdriver.common.by import By
 def get_cookies(url):
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
-    # url='https://me.sichuanair.com/login.shtml'
     driver.get(url)
 
-    #等待五秒
-    #wait = WebDriverWait(driver, 5)
     time.sleep(3)
     "获取验证码"
-    #elements_acesscode=driver.find_element(By.ID,'')
     elements_acesscode=driver.find_element(By.ID,'img_vcode').screenshot("a.jpg")
 
     ocr = ddddocr.DdddOcr()              # 实例化
