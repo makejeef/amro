@@ -47,7 +47,7 @@ post_data={'320':{'filterType': 'tailNumber',
 def get_flight():
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
-    driver.get(url)
+    driver.get(url['airnavx'])
 
 
     "输入账号密码进入airnav，获取cookies"
@@ -58,7 +58,7 @@ def get_flight():
 
     time.sleep(5)
     cookies = driver.get_cookies()
-    return cookies
+    # return cookies
     driver.close()
     
     air_cookies={cookie['name']: cookie['value'] for cookie in cookies}
@@ -81,10 +81,13 @@ def get_flight():
         
         else:
             print('no data')
-    return f
+            
+    f_dict=dict(zip(f_type,f))
+    
+    return f_dict
 
-"每一架飞机轮子的频率"
-def get_wocookies():
+"amro每一架飞机轮子的频率"
+def get_cookies():
     "模拟登录得到amro的cookies"
     driver=webdriver.Firefox()
     driver.implicitly_wait(5)
@@ -117,17 +120,18 @@ def get_wocookies():
     return cookies
     driver.close()
     
-def get_wo(tn,start,end):
-    cookies=get_wocookies()
+def get_wo(tn,start,end):#工作包内容
+    cookies=get_cookies()
     "使用cookies 获取工作包内容"
-    postdata_wo={"planstd":"{} 08:00:00".foramt(start),
-                "planend":" {} 08:00:00".foramt(end),
+    postdata_wo={"planstd":"{} 08:00:00".format(start),
+                "planend":" {} 08:00:00".format(end),
                 "keyWord":"主轮",
                 "keyWordStr":"主轮",
                 "actypeStr": "({})".format(tn),
                 "actype": "{}".format(tn),
                 "page":"1",
                 "rows":"999"}
+    
     session=requests.Session()
     cookies={cookie['name']: cookie['value'] for cookie in cookies}
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
@@ -137,20 +141,25 @@ def get_wo(tn,start,end):
         data_str=json.loads(json_data)
         wodata_list=data_str['data']
         whrp_data=[i for i in wodata_list if re.search('更换',i['MDTITLE_C'])]#列表解析方法
-        # rp_date=[l['ACTUEND'].split(' ')[0] for l in whrp_data ]
-        "循环出八个主轮更换日期数据"
-        "二维数组"
-        wh_date=[]
-        for i in range(8):
-            wh_date.append([j['ACTUEND'].split(' ')[0] for j in whrp_data if re.search('{}'.format(i+1),j['MDTITLE_C'])])
-    else:
-        print('no wo data')
-        
+    #     # rp_date=[l['ACTUEND'].split(' ')[0] for l in whrp_data ]
+    #     "循环出八个主轮更换日期数据"
+    #     "二维数组"
+    #     wh_date=[]
+    #     for i in range(8):
+    #         wh_date.append([j['ACTUEND'].split(' ')[0] for j in whrp_data if re.search('{}'.format(i+1),j['MDTITLE_C'])])
+    # else:
+    #     print('no wo data')
+    # data =[i['EN_DT'][0:10] for i in whrp_data]
+    return whrp_data
+
+def get_flsearch(tn,t1,t2):#时间间隔内的起降次数
+    cookies=get_cookies()
+
     "根据更换的时间，得到两次之间的起降次数"
     session=requests.Session()
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
-    postdata_fl={"flightDate":"{}".format(wh_date[0]),
-                "flightDate1":"{}".format(wh_date[-1]),
+    postdata_fl={"flightDate":"{}".format(t1),
+                "flightDate1":"{}".format(t2),
                 "actype1":"()",
                 "acno":"{}".format(tn),
                 "page":"1",
@@ -168,17 +177,26 @@ def get_wo(tn,start,end):
 if __name__=='__main__':
     "得到所有飞机的字典列表"
     fl=get_flight()
-    d={'320':fl[0],'330':fl[1],'350':fl[2]}
+    
     # dataframe=pd.DataFrame.from_dict(d,orient='index')
     # dataframe.to_csv('fl.csv',index=False,sep=',')
     
     "根据飞机类型得到所有的飞机的更换轮子的工作包"
     start='2023-01-01'
     end='2024-01-01'
-    wo=[]
-    for i in d:
-        wo.append(get_wo(i, start, end))
-    
-        
+    wo={}
+    "循环出三类飞机的换轮日期"
+    for i in fl.keys():
+        wo[i]=(get_wo(i, start, end))#wo[i]每一类飞机的换轮工作包
+        for j in range(len(fl[i])):#fl[i]是某一类飞机号列表
+            d={}#定义一个飞机号和换轮时间的映射
+            d[fl[i][j]]=[]#每个飞机号对应的值为一个列表
+            for k in wo[i]:#工作包附在飞机号的后面
+                if k['ACNO']==fl[i][j]:
+                    d[fl[i][j]].append(k['EN_DT'][0:10])
+                    
+            
+            
+                    
     
     
