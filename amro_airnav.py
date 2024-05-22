@@ -117,11 +117,11 @@ def get_cookies():
 
     time.sleep(5)
     cookies = driver.get_cookies()
-    return cookies
     driver.close()
+    return cookies
     
-def get_wo(tn,start,end):#工作包内容
-    cookies=get_cookies()
+def get_wo(tn,start,end,cookies):#工作包内容
+    # cookies=get_cookies()
     "使用cookies 获取工作包内容"
     postdata_wo={"planstd":"{} 08:00:00".format(start),
                 "planend":" {} 08:00:00".format(end),
@@ -185,15 +185,17 @@ if __name__=='__main__':
     start='2023-01-01'
     end='2024-01-01'
     wo={}
+    d={}#定义一个飞机号和换轮时间的映射
+
     "循环出三类飞机的换轮日期"
+    cookies=get_cookies()
     for i in fl.keys():
-        wo[i]=(get_wo(i, start, end))#wo[i]每一类飞机的换轮工作包
-        for j in range(len(fl[i])):#fl[i]是某一类飞机号列表
-            d={}#定义一个飞机号和换轮时间的映射
-            d[fl[i][j]]=[]#每个飞机号对应的值为一个列表
+        wo[i]=(get_wo(i, start, end,cookies))#wo[i]每一类飞机的换轮工作包
+        for j in fl[i]:#fl[i]是某一类飞机号列表
+            d[j]=[]#每个飞机号对应的值为一个列表
             for k in wo[i]:#工作包附在飞机号的后面
-                if k['ACNO']==fl[i][j]:
-                    d[fl[i][j]].append(k['EN_DT'][0:10])
+                if k['ACNO']==j:
+                    d[j].append(k['EN_DT'][0:10])
                     
             
             
