@@ -7,6 +7,7 @@ Created on Sat Mar 23 09:02:52 2024
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import pandas as pd
 
 import time,ddddocr,requests,json,csv,re
 
@@ -74,13 +75,34 @@ else:
     print('no data')
 
 xwb=['B-304U','B-304V','B-301D','B-306N','B-325J','B-32AG','B-32F8','B-32G2','B-32G6']
-rp_date=[]
-for i in range(len(xwb)):
-    rp_date.append([])
-    for j in whrp_data:
-        if j['ACNO']==xwb[i]:
-            rp_date[i].append(j['EN_DT'][0:10])
-            
-value=dict(zip(xwb,rp_date))
 
-    
+# d={}
+# for i in xwb:
+#     d[i]=[]
+#     for j in whrp_data:
+#         if j['ACNO']==i:
+#             d[i].append(j['EN_DT'][0:10])
+            
+# df=pd.DataFrame.from_dict(d,orient='index')
+# df.to_csv('350.csv',index=False,sep=',')
+
+d={}
+for i in xwb:
+    d[i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
+    for j in whrp_data:
+        if re.search('1号|一号',j['MDTITLE_C'] ):
+            d[i][0].append(j['EN_DT'][0:10])
+        elif re .search('2|二', j['MDTITLE_C']):
+            d[i][1].append(j['EN_DT'][0:10])
+        elif re .search('3|三', j['MDTITLE_C']):
+            d[i][2].append(j['EN_DT'][0:10])
+        elif re .search('4|四', j['MDTITLE_C']):
+            d[i][3].append(j['EN_DT'][0:10])
+        elif re .search('5|五', j['MDTITLE_C']):
+            d[i][4].append(j['EN_DT'][0:10])
+        elif re .search('6|六', j['MDTITLE_C']):
+            d[i][5].append(j['EN_DT'][0:10])            
+        elif re .search('7|七', j['MDTITLE_C']):
+            d[i][6].append(j['EN_DT'][0:10])
+        elif re .search('8|八', j['MDTITLE_C']):
+            d[i][7].append(j['EN_DT'][0:10])
