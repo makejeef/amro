@@ -90,19 +90,21 @@ d={}
 for i in xwb:
     d[i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
     for j in whrp_data:
-        if re.search('1号|一号',j['MDTITLE_C'] ):
-            d[i][0].append(j['EN_DT'][0:10])
-        elif re .search('2|二', j['MDTITLE_C']):
-            d[i][1].append(j['EN_DT'][0:10])
-        elif re .search('3|三', j['MDTITLE_C']):
-            d[i][2].append(j['EN_DT'][0:10])
-        elif re .search('4|四', j['MDTITLE_C']):
-            d[i][3].append(j['EN_DT'][0:10])
-        elif re .search('5|五', j['MDTITLE_C']):
-            d[i][4].append(j['EN_DT'][0:10])
-        elif re .search('6|六', j['MDTITLE_C']):
-            d[i][5].append(j['EN_DT'][0:10])            
-        elif re .search('7|七', j['MDTITLE_C']):
-            d[i][6].append(j['EN_DT'][0:10])
-        elif re .search('8|八', j['MDTITLE_C']):
-            d[i][7].append(j['EN_DT'][0:10])
+        if j['ACNO']==i:
+            if re.search('1号|一号',j['MDTITLE_C'] ):
+                d[i][0].append(j['EN_DT'][0:10])
+            elif re .search('2|二', j['MDTITLE_C']):
+                d[i][1].append(j['EN_DT'][0:10])
+            elif re .search('3|三', j['MDTITLE_C']):
+                d[i][2].append(j['EN_DT'][0:10])
+            elif re .search('4|四', j['MDTITLE_C']):
+                d[i][3].append(j['EN_DT'][0:10])
+            elif re .search('5|五', j['MDTITLE_C']):
+                d[i][4].append(j['EN_DT'][0:10])
+            elif re .search('6|六', j['MDTITLE_C']):
+                d[i][5].append(j['EN_DT'][0:10])            
+            elif re .search('7|七', j['MDTITLE_C']):
+                d[i][6].append(j['EN_DT'][0:10])
+            elif re .search('8|八', j['MDTITLE_C']):
+                d[i][7].append(j['EN_DT'][0:10])
+        
