@@ -107,4 +107,7 @@ for i in xwb:
                 d[i][6].append(j['EN_DT'][0:10])
             elif re .search('8|八', j['MDTITLE_C']):
                 d[i][7].append(j['EN_DT'][0:10])
-        
+
+df=pd.DataFrame.from_dict(d,orient='index')
+# df.index=xwb
+df.to_csv('350.csv',index=xwb,sep=',')
