@@ -9,7 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pandas as pd
 
-import time,ddddocr,requests,json,csv,re
+import time,ddddocr,requests,json,csv,re,json
 
 
 "获取网页信息"
@@ -108,6 +108,10 @@ for i in xwb:
             elif re .search('8|八', j['MDTITLE_C']):
                 d[i][7].append(j['EN_DT'][0:10])
 
-df=pd.DataFrame.from_dict(d,orient='index')
-# df.index=xwb
-df.to_csv('350.csv',index=xwb,sep=',')
+# df=pd.DataFrame.from_dict(d,orient='index')
+
+def save_dict(dictionary, file_path):
+    with open(file_path, 'w') as file:
+        json.dump(dictionary, file)
+        
+save_dict(d,'350.json')

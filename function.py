@@ -5,7 +5,7 @@ Created on Sun Apr 28 10:05:26 2024
 @author: makej
 """
 
-import time,ddddocr,requests,json,csv,re
+import time,ddddocr,requests,json,csv,re,json
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
