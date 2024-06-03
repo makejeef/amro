@@ -98,25 +98,49 @@ def get_fl(cookies,fln,start_date,end_date):
     
 
 if __name__ == '__main__':
-    data=pd.read_csv('350.csv')
-    
-    value_fln=input('请输入飞机号：')
-    wheel_num=input('请输入几号轮子:')
+    with open('350.json','r') as f:
+        d=json.load(f)
+
     value_url='https://me.sichuanair.com/login.shtml'
-    value_cookies=get_cookies(value_url)
-    "获取换轮时间"
-    wheels_date=get_wo(value_cookies, value_fln)
-   
+    cookies=get_cookies(value_url)
+
     "几号轮子的磨损频率"
-    dw=wheels_date[int(wheel_num)]#更换某一处轮子日期数量
-    wheel_freq=[]#两次之间的起降次数
-    #fl_num=[]
-    for i in range(len(dw)-1):
-        fl_num=get_fl(value_cookies,value_fln,dw[i],dw[i+1])
-        wheel_freq.append(len(fl_num))
-        if i==range(len(dw)-1):
-            break
-    print(wheel_freq)
+    "找出最大的时间间隔"
+    times={}
+    for i in d:
+        # maxd=[],mind=[]#得到换轮时间间隔
+        # for date in d[i]:
+        #     maxd.append(max(i))
+        #     mind.append(min(i))
+        # start_date=max(maxd)
+        # end_date=min(mind)
+        # #某一架飞机的循环次数
+        # fl=get_fl(cookies, d[i], start_date, end_date)
+        
+        times[i]=[[],[],[],[],[],[],[],[]]#某一架飞机对应的值是一个八个轮子的列表
+        for j in range(8):
+            
+            times[i][j]=[]#某一个轮子的更换时间
+            for k in range(len(d[i][j])):#对应每一个轮子的更换更换日期
+                fl=get_fl(cookies, d[i], d[i][j][k], d[i][j][k+1])
+                times[i][j].append(len(fl))
+                print(len(fl))
+                times[i][j]
+                if k+2==len(d[i][j]):
+                    break
+
+            
+            
+            
+    # dw=wheels_date[int(wheel_num)]#更换某一处轮子日期数量
+    # wheel_freq=[]#两次之间的起降次数
+    # #fl_num=[]
+    # for i in range(len(dw)-1):
+    #     fl_num=get_fl(value_cookies,value_fln,dw[i],dw[i+1])
+    #     wheel_freq.append(len(fl_num))
+    #     if i==range(len(dw)-1):
+    #         break
+    # print(wheel_freq)
     
     
     
