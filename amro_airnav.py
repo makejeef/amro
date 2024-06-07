@@ -35,12 +35,7 @@ post_data={'320':{'filterType': 'tailNumber',
                   'msnBinding': {"actype":["A350"],"customization":["CSC"]},
                   'revId': '661146_S1KD_C',
                   'searchMode':'document.toc'},
-           # 'fl':{"flightDate":"{}".format(start_date),
-           #             "flightDate1":"{}".format(end_date),
-           #             "actype1":"()",
-           #             "acno":"{}".format(fln),
-           #             "page":"1",
-           #             "rows":"999"}
+         
            }
 
 "获取所有飞机号"
@@ -141,15 +136,7 @@ def get_wo(tn,start,end,cookies):#工作包内容
         data_str=json.loads(json_data)
         wodata_list=data_str['data']
         whrp_data=[i for i in wodata_list if re.search('更换',i['MDTITLE_C'])]#列表解析方法
-    #     # rp_date=[l['ACTUEND'].split(' ')[0] for l in whrp_data ]
-    #     "循环出八个主轮更换日期数据"
-    #     "二维数组"
-    #     wh_date=[]
-    #     for i in range(8):
-    #         wh_date.append([j['ACTUEND'].split(' ')[0] for j in whrp_data if re.search('{}'.format(i+1),j['MDTITLE_C'])])
-    # else:
-    #     print('no wo data')
-    # data =[i['EN_DT'][0:10] for i in whrp_data]
+ 
     return whrp_data
 
 def get_flsearch(tn,t1,t2):#时间间隔内的起降次数

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Fri Jun  7 08:56:42 2024
+
+@author: makej
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Sat Mar 23 09:02:52 2024
 
 @author: makej
@@ -18,11 +25,8 @@ driver.implicitly_wait(5)
 url='https://me.sichuanair.com/login.shtml'
 driver.get(url)
 
-#等待五秒
-#wait = WebDriverWait(driver, 5)
 time.sleep(3)
 "获取验证码"
-#elements_acesscode=driver.find_element(By.ID,'')
 elements_acesscode=driver.find_element(By.ID,'img_vcode').screenshot("a.jpg")
 
 ocr = ddddocr.DdddOcr()              # 实例化
@@ -57,8 +61,8 @@ post_data={"planstd":"2018-01-04 08:00:00",
             "planend":" 2024-04-05 08:00:00",
             # "ifClose":"",
             # "order":"asc",
-            "keyWord":"主轮",
-            "keyWordStr":"主轮",
+            "keyWord":"刹车",
+            "keyWordStr":"刹车",
             "actypeStr": "(A350)",
             "actype": "A350",
             "page":"1",
@@ -74,15 +78,18 @@ if l.status_code==200:
 else:
     print('no data')
 
-xwb=['B-304U','B-304V','B-301D','B-306N','B-325J','B-32AG','B-32F8','B-32G2','B-32G6']
+# xwb=['B-304U','B-304V','B-301D','B-306N','B-325J','B-32AG','B-32F8','B-32G2','B-32G6']
+with open('fl.json','r') as f:
+     fl=json.load(f)
 
 
 d={}
-for i in xwb:
-    d[i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
+for i in fl['350']:
+    print(str(i)+'刹车更换时间')
+    d[i]=[[],[],[],[],[],[],[],[]] #八个刹车的更换时间的列表
     for j in whrp_data:
         if j['ACNO']==i:
-            if re.search('1号|一号',j['MDTITLE_C'] ):
+            if re.search('1|一',j['MDTITLE_C'] ):
                 d[i][0].append(j['EN_DT'][0:10])
             elif re .search('2|二', j['MDTITLE_C']):
                 d[i][1].append(j['EN_DT'][0:10])
@@ -105,4 +112,4 @@ def save_dict(dictionary, file_path):
     with open(file_path, 'w') as file:
         json.dump(dictionary, file)
         
-save_dict(d,'350.json')
+save_dict(d,'brake.json')

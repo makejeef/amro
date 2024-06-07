@@ -91,9 +91,13 @@ if __name__=='__main__':
     fl_list=get_fl(fl_cookies)
     # print(fl_list)
     d={'320':fl_list[0],'330':fl_list[1],'350':fl_list[2]}
-    dataframe=pd.DataFrame.from_dict(d,orient='index')
-    dataframe.to_csv('fl.csv',index=False,sep=',')
-    
+    # dataframe=pd.DataFrame.from_dict(d,orient='index')
+    # dataframe.to_csv('fl.csv',index=False,sep=',')
+    def save_dict(dictionary, file_path):
+        with open(file_path, 'w') as file:
+            json.dump(dictionary, file)
+            
+    save_dict(d,'fl.json')
     
     
     
