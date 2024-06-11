@@ -69,7 +69,7 @@ if l_330.status_code==200:
     data_str=json.loads(json_data)
     data_list=data_str['data']
     # print(data_list)
-    whrp_330data=[i for i in data_list if re.search('更换',i['MDTITLE_C'])]
+    whrp_330data=[i for i in data_list if re.search('更换',i['FK_INFO'])]
     
 else:
     print('no data')
@@ -84,21 +84,21 @@ for i in fl['330']:#区分飞机号
     d['330'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
     for j in whrp_330data:
         if j['ACNO']==i:
-            if re.search('1|一',j['MDTITLE_C'] ):
+            if re.search('1|一',j['FK_INFO'] ):
                 d['330'][i][0].append(j['EN_DT'][0:10])
-            elif re .search('2|二', j['MDTITLE_C']):
+            elif re .search('2|二', j['FK_INFO']):
                 d['330'][i][1].append(j['EN_DT'][0:10])
-            elif re .search('3|三', j['MDTITLE_C']):
+            elif re .search('3|三', j['FK_INFO']):
                 d['330'][i][2].append(j['EN_DT'][0:10])
-            elif re .search('4|四', j['MDTITLE_C']):
+            elif re .search('4|四', j['FK_INFO']):
                 d['330'][i][3].append(j['EN_DT'][0:10])
-            elif re .search('5|五', j['MDTITLE_C']):
+            elif re .search('5|五', j['FK_INFO']):
                 d['330'][i][4].append(j['EN_DT'][0:10])
-            elif re .search('6|六', j['MDTITLE_C']):
+            elif re .search('6|六', j['FK_INFO']):
                 d['330'][i][5].append(j['EN_DT'][0:10])            
-            elif re .search('7|七', j['MDTITLE_C']):
+            elif re .search('7|七', j['FK_INFO']):
                 d['330'][i][6].append(j['EN_DT'][0:10])
-            elif re .search('8|八', j['MDTITLE_C']):
+            elif re .search('8|八', j['FK_INFO']):
                 d['330'][i][7].append(j['EN_DT'][0:10])
 
 
@@ -118,7 +118,7 @@ if l_350.status_code==200:
     data_str=json.loads(json_data)
     data_list=data_str['data']
     # print(data_list)
-    whrp_350data=[i for i in data_list if re.search('更换',i['MDTITLE_C'])]
+    whrp_350data=[i for i in data_list if re.search('更换',i['FK_INFO'])]
     
 else:
     print('no data')
@@ -127,21 +127,21 @@ for i in fl['350']:#区分飞机号
     d['350'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
     for j in whrp_350data:
         if j['ACNO']==i:
-            if re.search('1|一',j['MDTITLE_C'] ):
+            if re.search('1|一',j['FK_INFO'] ):
                 d['350'][i][0].append(j['EN_DT'][0:10])
-            elif re .search('2|二', j['MDTITLE_C']):
+            elif re .search('2|二', j['FK_INFO']):
                 d['350'][i][1].append(j['EN_DT'][0:10])
-            elif re .search('3|三', j['MDTITLE_C']):
+            elif re .search('3|三', j['FK_INFO']):
                 d['350'][i][2].append(j['EN_DT'][0:10])
-            elif re .search('4|四', j['MDTITLE_C']):
+            elif re .search('4|四', j['FK_INFO']):
                 d['350'][i][3].append(j['EN_DT'][0:10])
-            elif re .search('5|五', j['MDTITLE_C']):
+            elif re .search('5|五', j['FK_INFO']):
                 d['350'][i][4].append(j['EN_DT'][0:10])
-            elif re .search('6|六', j['MDTITLE_C']):
+            elif re .search('6|六', j['FK_INFO']):
                 d['350'][i][5].append(j['EN_DT'][0:10])            
-            elif re .search('7|七', j['MDTITLE_C']):
+            elif re .search('7|七', j['FK_INFO']):
                 d['350'][i][6].append(j['EN_DT'][0:10])
-            elif re .search('8|八', j['MDTITLE_C']):
+            elif re .search('8|八', j['FK_INFO']):
                 d['350'][i][7].append(j['EN_DT'][0:10])
 
 
