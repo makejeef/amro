@@ -68,7 +68,7 @@ def get_fl(cookies,fln,start_date,end_date):
     
 
 if __name__ == '__main__':
-    with open('350.json','r') as f:
+    with open('wheels_time.json','r') as f:
         d=json.load(f)
 
     value_url='https://me.sichuanair.com/login.shtml'
@@ -77,18 +77,18 @@ if __name__ == '__main__':
     "几号轮子的磨损频率"
     "找出最大的时间间隔"
     times={}
-    for i in d:
+    for i in d['350']:
         print(str(i)+'轮子更换频率')
         times[i]=[[],[],[],[],[],[],[],[]]#某一架飞机对应的值是一个八个轮子的列表
         for j in range(8):
-            print(str(j)+'号轮子')
+            print(str(j+1)+'号轮子')
             times[i][j]=[]#某一个轮子的更换时间
-            for k in range(len(d[i][j])):#对应每一个轮子的更换更换日期
-                fl=get_fl(cookies, i, d[i][j][k], d[i][j][k+1])
+            for k in range(len(d['350'][i][j])):#对应每一个轮子的更换更换日期
+                fl=get_fl(cookies, i, d['350'][i][j][k], d['350'][i][j][k+1])
                 times[i][j].append(len(fl))
                 print(len(fl))
                 times[i][j]
-                if k+2==len(d[i][j]):
+                if k+2==len(d['350'][i][j]):
                     break
 
  
