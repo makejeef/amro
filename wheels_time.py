@@ -68,9 +68,19 @@ if l.status_code==200:
     json_data=l.content.decode('utf-8')
     data_str=json.loads(json_data)
     data_list=data_str['data']
-    # print(data_list)
-    whrp=[i for i in data_list if 'FK_INFO' in i]
-    whrp_data=[j for j in whrp if re.search('更换',j['FK_INFO'])]
+    def whrp1(d):
+        if 'FK_INFO' in d:
+            if re.search('更换',d['FK_INFO']):
+                return d
+    def whrp2(d):
+        if 'ATA' in d:
+            if d['ATA'][0:5]=='32-41':
+                return d
+    
+        
+    whrp=list(filter(whrp1,data_list))
+    whrp_data=list(filter(whrp2,whrp))
+
     
 else:
     print('no data')
@@ -86,28 +96,36 @@ for i in fl['330']:#区分飞机号
     for j in whrp_data:
         if j['TASKSTS']=='FC':
             if j['ACNO']==i:
-                if re.search('1|一',j['FK_INFO'] ):
+                if re.search(r'更换(1|一)',j['FK_INFO'] ):
+                    print('更换一号主轮')
                     d['330'][i][0].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('2|二', j['FK_INFO']):
+                elif re .search(r'更换(2|二)', j['FK_INFO']):
+                    print('更换二号主轮')
                     d['330'][i][1].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('3|三', j['FK_INFO']):
+                elif re .search(r'更换(3|三)', j['FK_INFO']):
+                    print('更换三号主轮')
                     d['330'][i][2].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('4|四', j['FK_INFO']):
+                elif re .search(r'更换(4|四)', j['FK_INFO']):
+                    print('更换四号主轮')
                     d['330'][i][3].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('5|五', j['FK_INFO']):
+                elif re .search(r'更换(5|五)', j['FK_INFO']):
+                    print('更换五号主轮')
                     d['330'][i][4].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('6|六', j['FK_INFO']):
+                elif re .search(r'更换(6|六)', j['FK_INFO']):
+                    print('更换六号主轮')
                     d['330'][i][5].append(j['ACTUEND'][0:10])            
                     print(j['FK_INFO'])
-                elif re .search('7|七', j['FK_INFO']):
+                elif re .search(r'更换(7|七)', j['FK_INFO']):
+                    print('更换七号主轮')
                     d['330'][i][6].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('8|八', j['FK_INFO']):
+                elif re .search(r'更换(8|八)', j['FK_INFO']):
+                    print('更换八号主轮')
                     d['330'][i][7].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
 
@@ -117,28 +135,36 @@ for i in fl['350']:#区分飞机号
     for j in whrp_data:
         if j['ACNO']==i:
             if j['TASKSTS']=='FC':
-                if re.search('1|一',j['FK_INFO'] ):
+                if re.search(r'更换(1|一)',j['FK_INFO'] ):
+                    print('更换一号主轮')
                     d['350'][i][0].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('2|二', j['FK_INFO']):
+                elif re .search(r'更换(2|二)', j['FK_INFO']):
+                    print('更换二号主轮')
                     d['350'][i][1].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('3|三', j['FK_INFO']):
+                elif re .search(r'更换(3|三)', j['FK_INFO']):
+                    print('更换三号主轮')
                     d['350'][i][2].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('4|四', j['FK_INFO']):
+                elif re .search(r'更换(4|四)', j['FK_INFO']):
+                    print('更换四号主轮')
                     d['350'][i][3].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('5|五', j['FK_INFO']):
+                elif re .search(r'更换(5|五)', j['FK_INFO']):
+                    print('更换五号主轮')
                     d['350'][i][4].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('6|六', j['FK_INFO']):
+                elif re .search(r'更换(6|六)', j['FK_INFO']):
+                    print('更换六号主轮')
                     d['350'][i][5].append(j['ACTUEND'][0:10])            
                     print(j['FK_INFO'])
-                elif re .search('7|七', j['FK_INFO']):
+                elif re .search(r'更换(7|七)', j['FK_INFO']):
+                    print('更换七号主轮')
                     d['350'][i][6].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
-                elif re .search('8|八', j['FK_INFO']):
+                elif re .search(r'更换(8|八)', j['FK_INFO']):
+                    print('更换八号主轮')
                     d['350'][i][7].append(j['ACTUEND'][0:10])
                     print(j['FK_INFO'])
 
