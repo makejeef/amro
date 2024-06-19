@@ -59,17 +59,18 @@ postdata_330={"planstd":"2019-01-04 08:00:00",
             # "order":"asc",
             "keyWord":"主轮",
             "keyWordStr":"主轮",
-            "actypeStr": "(A330)",
-            "actype": "330",
+            "actypeStr": "(A330|350)",
+            "actype": "A330,A350",
             "page":"1",
             "rows":"9999"}
-l_330=session.post(url_workorder,headers=headers,data=postdata_330,cookies=cookies)
-if l_330.status_code==200:
-    json_data=l_330.content.decode('utf-8')
+l=session.post(url_workorder,headers=headers,data=postdata_330,cookies=cookies)
+if l.status_code==200:
+    json_data=l.content.decode('utf-8')
     data_str=json.loads(json_data)
     data_list=data_str['data']
     # print(data_list)
-    whrp_330data=[i for i in data_list if re.search('更换',i['FK_INFO'])]
+    whrp=[i for i in data_list if 'FK_INFO' in i]
+    whrp_data=[j for j in whrp if re.search('更换',j['FK_INFO'])]
     
 else:
     print('no data')
@@ -82,67 +83,64 @@ with open('fl.json','r') as f:
 d={'330':{},'350':{}}
 for i in fl['330']:#区分飞机号
     d['330'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
-    for j in whrp_330data:
-        if j['ACNO']==i:
-            if re.search('1|一',j['FK_INFO'] ):
-                d['330'][i][0].append(j['EN_DT'][0:10])
-            elif re .search('2|二', j['FK_INFO']):
-                d['330'][i][1].append(j['EN_DT'][0:10])
-            elif re .search('3|三', j['FK_INFO']):
-                d['330'][i][2].append(j['EN_DT'][0:10])
-            elif re .search('4|四', j['FK_INFO']):
-                d['330'][i][3].append(j['EN_DT'][0:10])
-            elif re .search('5|五', j['FK_INFO']):
-                d['330'][i][4].append(j['EN_DT'][0:10])
-            elif re .search('6|六', j['FK_INFO']):
-                d['330'][i][5].append(j['EN_DT'][0:10])            
-            elif re .search('7|七', j['FK_INFO']):
-                d['330'][i][6].append(j['EN_DT'][0:10])
-            elif re .search('8|八', j['FK_INFO']):
-                d['330'][i][7].append(j['EN_DT'][0:10])
+    for j in whrp_data:
+        if j['TASKSTS']=='FC':
+            if j['ACNO']==i:
+                if re.search('1|一',j['FK_INFO'] ):
+                    d['330'][i][0].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('2|二', j['FK_INFO']):
+                    d['330'][i][1].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('3|三', j['FK_INFO']):
+                    d['330'][i][2].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('4|四', j['FK_INFO']):
+                    d['330'][i][3].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('5|五', j['FK_INFO']):
+                    d['330'][i][4].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('6|六', j['FK_INFO']):
+                    d['330'][i][5].append(j['ACTUEND'][0:10])            
+                    print(j['FK_INFO'])
+                elif re .search('7|七', j['FK_INFO']):
+                    d['330'][i][6].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('8|八', j['FK_INFO']):
+                    d['330'][i][7].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
 
-
-postdata_350={"planstd":"2019-01-04 08:00:00",
-            "planend":" 2024-04-05 08:00:00",
-            # "ifClose":"",
-            # "order":"asc",
-            "keyWord":"主轮",
-            "keyWordStr":"主轮",
-            "actypeStr": "(A350)",
-            "actype": "350",
-            "page":"1",
-            "rows":"9999"}
-l_350=session.post(url_workorder,headers=headers,data=postdata_350,cookies=cookies)
-if l_350.status_code==200:
-    json_data=l_350.content.decode('utf-8')
-    data_str=json.loads(json_data)
-    data_list=data_str['data']
-    # print(data_list)
-    whrp_350data=[i for i in data_list if re.search('更换',i['FK_INFO'])]
-    
-else:
-    print('no data')
-    
+   
 for i in fl['350']:#区分飞机号
     d['350'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
-    for j in whrp_350data:
+    for j in whrp_data:
         if j['ACNO']==i:
-            if re.search('1|一',j['FK_INFO'] ):
-                d['350'][i][0].append(j['EN_DT'][0:10])
-            elif re .search('2|二', j['FK_INFO']):
-                d['350'][i][1].append(j['EN_DT'][0:10])
-            elif re .search('3|三', j['FK_INFO']):
-                d['350'][i][2].append(j['EN_DT'][0:10])
-            elif re .search('4|四', j['FK_INFO']):
-                d['350'][i][3].append(j['EN_DT'][0:10])
-            elif re .search('5|五', j['FK_INFO']):
-                d['350'][i][4].append(j['EN_DT'][0:10])
-            elif re .search('6|六', j['FK_INFO']):
-                d['350'][i][5].append(j['EN_DT'][0:10])            
-            elif re .search('7|七', j['FK_INFO']):
-                d['350'][i][6].append(j['EN_DT'][0:10])
-            elif re .search('8|八', j['FK_INFO']):
-                d['350'][i][7].append(j['EN_DT'][0:10])
+            if j['TASKSTS']=='FC':
+                if re.search('1|一',j['FK_INFO'] ):
+                    d['350'][i][0].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('2|二', j['FK_INFO']):
+                    d['350'][i][1].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('3|三', j['FK_INFO']):
+                    d['350'][i][2].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('4|四', j['FK_INFO']):
+                    d['350'][i][3].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('5|五', j['FK_INFO']):
+                    d['350'][i][4].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('6|六', j['FK_INFO']):
+                    d['350'][i][5].append(j['ACTUEND'][0:10])            
+                    print(j['FK_INFO'])
+                elif re .search('7|七', j['FK_INFO']):
+                    d['350'][i][6].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
+                elif re .search('8|八', j['FK_INFO']):
+                    d['350'][i][7].append(j['ACTUEND'][0:10])
+                    print(j['FK_INFO'])
 
 
 def save_dict(dictionary, file_path):
