@@ -80,15 +80,15 @@ if __name__ == '__main__':
 
     for ii in d:#ii:机型
         for i in d[ii]:#i：飞机号
-            print(str(i)+'轮子更换频率')
+            print(str(i)+'主轮更换频率')
             times[ii][i]=[[],[],[],[],[],[],[],[]]#某一架飞机对应的值是一个八个轮子的列表
             for j in range(8):#j:轮子号
-                print(str(j+1)+'号轮子')
+                print(str(j+1)+'号轮')
                 times[ii][i][j]=[]#某一个轮子的更换时间
                 for k in range(len(d[ii][i][j])):#对应每一个轮子的更换更换日期
                     fl=get_fl(cookies, i, d[ii][i][j][k], d[ii][i][j][k+1])
                     times[ii][i][j].append([len(fl),d[ii][i][j][k], d[ii][i][j][k+1]])
-                    if len(fl)<100 or len(fl)>200:
+                    if len(fl)<150 or len(fl)>250:
                         print(len(fl),d[ii][i][j][k],d[ii][i][j][k+1])
                     else:
                         print(len(fl))
@@ -96,7 +96,11 @@ if __name__ == '__main__':
                     if k+2==len(d[ii][i][j]):
                         break
     
-
+def save_dict(dictionary, file_path):
+    with open(file_path, 'w') as file:
+        json.dump(dictionary, file)
+        
+save_dict(times,'wheels_fl.json')
  
     
     
