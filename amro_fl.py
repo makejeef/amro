@@ -68,7 +68,7 @@ def get_fl(cookies,fln,start_date,end_date):
     
 
 if __name__ == '__main__':
-    with open('wheels_time.json','r') as f:
+    with open('wheels_time.json','r',encoding=('utf-8')) as f:
         d=json.load(f)
 
     value_url='https://me.sichuanair.com/login.shtml'
@@ -86,9 +86,9 @@ if __name__ == '__main__':
                 print(str(j+1)+'号轮')
                 times[ii][i][j]=[]#某一个轮子的更换时间
                 for k in range(len(d[ii][i][j])):#对应每一个轮子的更换更换日期
-                    fl=get_fl(cookies, i, d[ii][i][j][k], d[ii][i][j][k+1])
+                    fl=get_fl(cookies, i, d[ii][i][j][k][0:10], d[ii][i][j][k+1][0:10])
                     times[ii][i][j].append([len(fl),d[ii][i][j][k], d[ii][i][j][k+1]])
-                    if len(fl)<150 or len(fl)>250:
+                    if len(fl)<150 or len(fl)>300:
                         print(len(fl),d[ii][i][j][k],d[ii][i][j][k+1])
                     else:
                         print(len(fl))

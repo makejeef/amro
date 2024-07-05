@@ -100,8 +100,7 @@ for i in fl['330']:#i飞机号
                 for k in range(8):#k号主轮
                     pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
                     if re.search(pattern,j['FK_INFO']):
-                        # print('更换{}号主轮'.format(cnNumber[k]))
-                        d['330'][i][k].append(j['ACTUEND'][0:10])
+                        d['330'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
 
    
 for i in fl['350']:#区分飞机号
@@ -115,11 +114,11 @@ for i in fl['350']:#区分飞机号
                         pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
                         if re.search(pattern,j['FK_INFO']):
                             # print('更换{}号主轮'.format(cnNumber[k]))
-                            d['350'][i][k].append(j['ACTUEND'][0:10])
+                            d['350'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
                 
 
 def save_dict(dictionary, file_path):
-    with open(file_path, 'w') as file:
-        json.dump(dictionary, file)
+    with open(file_path, 'w',encoding='utf-8') as file:
+        json.dump(dictionary, file,ensure_ascii=False)
         
 save_dict(d,'wheels_time.json')
