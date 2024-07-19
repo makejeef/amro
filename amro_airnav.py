@@ -103,7 +103,7 @@ def get_cookies():
     elements_acesscode.send_keys('018608')
 
     elements_acesscode=driver.find_element(By.NAME,'userPassword')
-    elements_acesscode.send_keys('7400233@scal')
+    elements_acesscode.send_keys('')
 
     elements_acesscode=driver.find_element(By.NAME,'vCode')
     elements_acesscode.send_keys(res)
