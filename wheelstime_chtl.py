@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Mar 23 09:02:52 2024
+Created on Thu Jul 25 09:39:26 2024
 
 @author: makej
 """
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pandas as pd
@@ -55,17 +54,22 @@ session=requests.Session()
 cookies={cookie['name']: cookie['value'] for cookie in cookies}
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
 url_workorder='https://me.sichuanair.com/api/v1/plugins/LM_WORKORDER_LIST'
-postdata_330={"planstd":"2019-01-04 08:00:00",
+
+url_chtl='https://me.sichuanair.com/api/v1/plugins/LM_NRC_CHTL_LIST'
+
+"得到所有换轮工作包"
+postdata={"planstd":"2019-01-04 08:00:00",
             "planend":" 2024-04-05 08:00:00",
             # "ifClose":"",
             # "order":"asc",
-            "keyWord":"刹车",
-            "keyWordStr":"刹车",
+            "keyWord":"主轮",
+            "keyWordStr":"主轮",
             "actypeStr": "(A330|350)",
             "actype": "A330,A350",
             "page":"1",
             "rows":"9999"}
-l=session.post(url_workorder,headers=headers,data=postdata_330,cookies=cookies)
+
+l=session.post(url_workorder,headers=headers,data=postdata,cookies=cookies)
 if l.status_code==200:
     json_data=l.content.decode('utf-8')
     data_str=json.loads(json_data)
@@ -73,16 +77,23 @@ if l.status_code==200:
     def whrp1(d):
         if 'FK_INFO' in d:
             if re.search('更换',d['FK_INFO']):
-                
                 return d
-    # def whrp2(d):
-    #     if 'ATA' in d:
-    #         if d['ATA'][0:5]=='32-41':
-    #             return d
-    
+    def whrp2(d):
+        if 'ATA' in d:
+            if d['ATA'][0:5]=='32-41':
+                return d
+    def whrp3(d):
+        taskid=d['TASKID']
+        postdata_chtl={"taskid":"{}".format(taskid)}
+        chtl=session.post(url_chtl,headers=headers,data=postdata_chtl,cookies=cookies)
+        if chtl.status_code==200:
+            chtl_data=chtl.content.decode('utf-8')
+            chtl_str=json.loads(chtl_data)
+            chtl_list=chtl_str['data']
+            if 'VPN'
         
     whrp=list(filter(whrp1,data_list))#筛选更换工作包
-    # whrp_data=list(filter(whrp2,whrp))#筛选章节号‘32-41’工作包
+    whrp_data=list(filter(whrp2,whrp))#筛选章节号‘32-41’工作包
 
     
 else:
@@ -95,36 +106,33 @@ with open('fl.json','r') as f:
 
 d={'330':{},'350':{}}
 for i in fl['330']:#i飞机号
-    d['330'][i]=[[],[],[],[],[],[],[],[]] #八个刹车的更换时间的列表
-    for j in whrp:
+    d['330'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
+    for j in whrp_data:
         if j['TASKSTS']=='FC':
-            if 'ACNO' in j:
-                if j['ACNO']==i:
-                    cnNumber=['一','二','三','四','五','六','七','八']
-                    for k in range(8):#k号刹车
-                        pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
-                        if re.search(pattern,j['FK_INFO']):
-                            d['330'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
-                
+            if j['ACNO']==i:
+                cnNumber=['一','二','三','四','五','六','七','八']
+                for k in range(8):#k号主轮
+                    pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
+                    if re.search(pattern,j['FK_INFO']):
+                        d['330'][i][k].append(j['ACTUEND'][0:10]+j['TASKID'])
 
    
 for i in fl['350']:#区分飞机号
-    d['350'][i]=[[],[],[],[],[],[],[],[]] #八个刹车的更换时间的列表
-    for j in whrp:
-        if j['TASKSTS']=='FC':
-            if 'ACNO' in j:
+    d['350'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
+    for j in whrp_data:
+        if j['ACNO']==i:
+            if j['TASKSTS']=='FC':
                 if j['ACNO']==i:
                     cnNumber=['一','二','三','四','五','六','七','八']
                     for k in range(8):
                         pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
                         if re.search(pattern,j['FK_INFO']):
-                            # print('更换{}号刹车'.format(cnNumber[k]))
-                            d['350'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
-            
+                            # print('更换{}号主轮'.format(cnNumber[k]))
+                            d['350'][i][k].append(j['ACTUEND'][0:10]+j['TASKID'])
+                
 
-            
 def save_dict(dictionary, file_path):
     with open(file_path, 'w',encoding='utf-8') as file:
         json.dump(dictionary, file,ensure_ascii=False)
         
-save_dict(d,'brakes_time.json')
+save_dict(d,'taskid.json')
