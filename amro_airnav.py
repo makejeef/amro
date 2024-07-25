@@ -100,11 +100,19 @@ def get_cookies():
 
     "输入账号密码进入amro，获取cookies"
     elements_acesscode=driver.find_element(By.NAME,'username')
+<<<<<<< HEAD
     username=input('username')
     elements_acesscode.send_keys(username)
 
     elements_acesscode=driver.find_element(By.NAME,'userPassword')
     password=input('password')
+=======
+    username=input("username:")
+    elements_acesscode.send_keys(username)
+
+    elements_acesscode=driver.find_element(By.NAME,'userPassword')
+    password=input("password:")
+>>>>>>> 6ec5223ee660ac7d7370a4c05c536337348c3e4b
     elements_acesscode.send_keys(password)
 
     elements_acesscode=driver.find_element(By.NAME,'vCode')

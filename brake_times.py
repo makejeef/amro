@@ -38,10 +38,12 @@ res = ocr.classification(img_bytes)  # 识别
 
 "输入账号密码进入amro，获取cookies"
 elements_acesscode=driver.find_element(By.NAME,'username')
-elements_acesscode.send_keys('018608')
+username=input("username:")
+elements_acesscode.send_keys(username)
 
 elements_acesscode=driver.find_element(By.NAME,'userPassword')
-elements_acesscode.send_keys('7400233@scal')
+password=input("password:")
+elements_acesscode.send_keys(password)
 
 elements_acesscode=driver.find_element(By.NAME,'vCode')
 elements_acesscode.send_keys(res)
