@@ -55,8 +55,9 @@ session=requests.Session()
 cookies={cookie['name']: cookie['value'] for cookie in cookies}
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
 url_workorder='https://me.sichuanair.com/api/v1/plugins/LM_WORKORDER_LIST'
+url_chtl='https://me.sichuanair.com/api/v1/plugins/LM_NRC_CHTL_LIST'
 postdata_330={"planstd":"2019-01-04 08:00:00",
-            "planend":" 2024-04-05 08:00:00",
+            "planend":" 2024-07-29 08:00:00",
             # "ifClose":"",
             # "order":"asc",
             "keyWord":"刹车",
@@ -70,33 +71,38 @@ if l.status_code==200:
     json_data=l.content.decode('utf-8')
     data_str=json.loads(json_data)
     data_list=data_str['data']
-    def whrp1(d):
-        if 'FK_INFO' in d:
-            if re.search('更换',d['FK_INFO']):
-                
-                return d
-    # def whrp2(d):
-    #     if 'ATA' in d:
-    #         if d['ATA'][0:5]=='32-41':
-    #             return d
-    
-        
-    whrp=list(filter(whrp1,data_list))#筛选更换工作包
-    # whrp_data=list(filter(whrp2,whrp))#筛选章节号‘32-41’工作包
+    whrp_data=[i for i in data_list if re.search('更换',i['MDTITLE_C'])]
 
-    
 else:
     print('no data')
-    
-    
 
+
+           
+
+# value_data=[]
+# def whrp1(i):
+#     taskid=i['TASKID']
+#     postdata_chtl={"taskid":"{}".format(taskid)}
+#     chtl=session.post(url_chtl,headers=headers,data=postdata_chtl,cookies=cookies)
+#     if chtl.status_code==200:
+#         chtl_data=chtl.content.decode('utf-8')
+#         chtl_str=json.loads(chtl_data)
+#         if chtl_str['data'] !=[]:
+#             chtl_list=chtl_str['data'][0]
+#             if 'VPN' in chtl_list:
+#                 if re.search('2-1577-9', chtl_list['VPN']):
+#                     return i
+# whrp=list(filter(whrp1,whrp_data))#筛选更换工作包
+
+
+"飞机号导入"
 with open('fl.json','r') as f:
      fl=json.load(f)
 
 d={'330':{},'350':{}}
 for i in fl['330']:#i飞机号
     d['330'][i]=[[],[],[],[],[],[],[],[]] #八个刹车的更换时间的列表
-    for j in whrp:
+    for j in whrp_data:
         if j['TASKSTS']=='FC':
             if 'ACNO' in j:
                 if j['ACNO']==i:
@@ -110,7 +116,7 @@ for i in fl['330']:#i飞机号
    
 for i in fl['350']:#区分飞机号
     d['350'][i]=[[],[],[],[],[],[],[],[]] #八个刹车的更换时间的列表
-    for j in whrp:
+    for j in whrp_data:
         if j['TASKSTS']=='FC':
             if 'ACNO' in j:
                 if j['ACNO']==i:
