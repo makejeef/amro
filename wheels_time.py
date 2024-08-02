@@ -56,7 +56,7 @@ cookies={cookie['name']: cookie['value'] for cookie in cookies}
 headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
 url_workorder='https://me.sichuanair.com/api/v1/plugins/LM_WORKORDER_LIST'
 postdata_330={"planstd":"2019-01-04 08:00:00",
-            "planend":" 2024-04-05 08:00:00",
+            "planend":"2024-04-05 08:00:00",
             # "ifClose":"",
             # "order":"asc",
             "keyWord":"刹车",
@@ -74,14 +74,14 @@ if l.status_code==200:
         if 'FK_INFO' in d:
             if re.search('更换',d['FK_INFO']):
                 return d
-    # def whrp2(d):
-    #     if 'ATA' in d:
-    #         if d['ATA'][0:5]=='32-41':
-    #             return d
+    def whrp2(d):
+        if 'ATA' in d:
+            if d['ATA'][0:5]=='32-41':
+                return d
     
         
     whrp=list(filter(whrp1,data_list))#筛选更换工作包
-    # whrp_data=list(filter(whrp2,whrp))#筛选章节号‘32-41’工作包
+    whrp_data=list(filter(whrp2,whrp))#筛选章节号‘32-41’工作包
 
     
 else:
