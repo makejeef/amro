@@ -47,20 +47,18 @@ def get_cookies(url):
     driver.close()
 "利用cookies获取工作包数据"
 
-def get_wheelstime(cook):
+def get_wheelstime(cookies,fln,start_date,end_date):
     "requests使用selenium获取的cookies，来模拟登录获取相关数据"
     session=requests.Session()
     cookies={cookie['name']: cookie['value'] for cookie in cookies}
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',}
     url_workorder='https://me.sichuanair.com/api/v1/plugins/LM_WORKORDER_LIST'
-    postdata_330={"planstd":"2019-01-04 08:00:00",
-                "planend":"2024-04-05 08:00:00",
-                # "ifClose":"",
-                # "order":"asc",
-                "keyWord":"刹车",
-                "keyWordStr":"刹车",
-                "actypeStr": "(A330|350)",
-                "actype": "A330,A350",
+    postdata_330={"planstd":"{}".format(start_date),
+                "planend":"{}".format(end_date),
+                "keyWord":"主轮",
+                "keyWordStr":"主轮",
+                "actypeStr": "()",
+                "acno": "{}".format(fln),
                 "page":"1",
                 "rows":"9999"}
     l=session.post(url_workorder,headers=headers,data=postdata_330,cookies=cookies)
@@ -90,36 +88,17 @@ def get_wheelstime(cook):
     with open('fl.json','r') as f:
          fl=json.load(f)
 
-    d={'330':{},'350':{}}
-    for i in fl['330']:#i飞机号
-        d['330'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
-        for j in whrp_data:
-            if j['TASKSTS']=='FC':
-                if j['ACNO']==i:
-                    cnNumber=['一','二','三','四','五','六','七','八']
-                    for k in range(8):#k号主轮
-                        pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
-                        if re.search(pattern,j['FK_INFO']):
-                            d['330'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
-
-       
-    for i in fl['350']:#区分飞机号
-        d['350'][i]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
-        for j in whrp_data:
-            if j['ACNO']==i:
-                if j['TASKSTS']=='FC':
-                    if j['ACNO']==i:
-                        cnNumber=['一','二','三','四','五','六','七','八']
-                        for k in range(8):
-                            pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
-                            if re.search(pattern,j['FK_INFO']):
-                                # print('更换{}号主轮'.format(cnNumber[k]))
-                                d['350'][i][k].append(j['ACTUEND'][0:10]+j['FK_INFO'])
-        
-
-    
-    
-    
+    d={fln:{}}
+    d[fln]=[[],[],[],[],[],[],[],[]] #八个轮子的更换时间的列表
+    for i in whrp_data:
+        if i['TASKSTS']=='FC':
+            if i['ACNO']==i:
+                cnNumber=['一','二','三','四','五','六','七','八']
+                for k in range(8):#k号主轮
+                    pattern='更换.*?({}|{})'.format(k+1,cnNumber[k])
+                    if re.search(pattern,i['FK_INFO']):
+                        d[fln][k].append(i['ACTUEND'][0:10]+i['FK_INFO'])
+ 
     
 def get_fl(cookies,fln,start_date,end_date):
     session=requests.Session()

@@ -9,7 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pandas as pd
 
-import time,ddddocr,requests,json,re,json
+import time,ddddocr,requests,json,re
 
 "url池子"
 url={'airnavx':'http://tp3.sichuanair.com:8000/airnavx/search/text',
@@ -201,7 +201,7 @@ if __name__=='__main__':
             wheel_fl['350'][i][j]=len(get_fl(cookies, i, date['350'][i][j], end))
 
             
-    save_dict(wheel_fl,'wheels_fl.json')    
+    save_dict(wheel_fl,'wheels_fl.json')
 
         
             
