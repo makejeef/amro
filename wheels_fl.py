@@ -9,6 +9,9 @@ import time,ddddocr,requests,json,csv,re,json
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.stats as st
 
 "获取cookies"
 def get_cookies(url):
@@ -120,7 +123,35 @@ def get_fl(cookies,fln,start_date,end_date):
     else:
         print('no fl data')
 
-    
+def plot_img(data):
+    "置信区间"
+      
+    # create 90% and 95% confidence interval
+    CI_90=st.t.interval(0.90, df=len(data)-1,
+                  loc=np.mean(data),
+                  scale=st.sem(data))            
+    CI_95=st.t.interval(0.95, df=len(data)-1,
+                  loc=np.mean(data),
+                  scale=st.sem(data))    
+    print('置信区间为：0.9:{}，0.95：{}'.format(CI_90, CI_95))
+
+    "作图"
+    x=np.array(range(len(data)))
+    y=np.array(data)
+    plt.plot(x, y)
+
+    "90置信区间"
+    plt.plot([0,len(data)],[int(CI_90[0]),int(CI_90[0])],color='red',lw=2)
+    plt.plot([0,len(data)],[int(CI_90[1]),int(CI_90[1])],color='red',lw=2)
+
+    "95置信区间"
+    plt.plot([0,len(data)],[int(CI_95[0]),int(CI_95[0])],color='green',lw=2)
+    plt.plot([0,len(data)],[int(CI_95[1]),int(CI_95[1])],color='green',lw=2)
+
+    # "显示范围"
+    # plt.ylim((220,260))
+
+    plt.show()
 
 if __name__ == '__main__':
     with open('wheels_time.json','r',encoding=('utf-8')) as f:
@@ -151,12 +182,20 @@ if __name__ == '__main__':
                     if k+2==len(d[ii][i][j]):
                         break
     
-def save_dict(dictionary, file_path):
-    with open(file_path, 'w') as file:
-        json.dump(dictionary, file)
+# def save_dict(dictionary, file_path):
+#     with open(file_path, 'w') as file:
+#         json.dump(dictionary, file)
         
-save_dict(times,'wheels_fl.json')
- 
+# save_dict(times,'wheels_fl.json')
+    cycle={'330':[],'350':[]}
+    for i in times:
+        for j in times[i]:#某一个机型的循环
+            for k in times[i][j]:#某一个机号的循环
+                for l in k:
+                    cycle[i].append(l[0])
+    
+    plot_img(cycle['330'])
+    plot_img(cycle['350'])
     
     
     
